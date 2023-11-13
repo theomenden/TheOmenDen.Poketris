@@ -1,0 +1,24 @@
+﻿
+<Autocomplete TItem="PokeData"
+              TValue="int"
+              Data="@_pokemon"
+              TotalItems="_pokemon.Count"
+              TextField="pokemon => pokemon.Name"
+              ValueField="pokemon => pokemon.Id"
+              Placeholder="Search..."
+              Filter="AutocompleteFilter.StartsWith">
+    <NotFoundContent> Sorry... @context was not found! :( </NotFoundContent>
+</Autocomplete>
+@code
+{
+    [Inject] IPokeApiResolverService PokeClient { get; init; }
+
+    private readonly List<PokeData> _pokemon = new(151);
+
+    protected override async Task OnInitializedAsync()
+    {
+        var pokemonApiResourceList = await PokeClient.GetPokemonInfoAsync();
+
+        _pokemon.AddRange(pokemonApiResourceList);
+    }
+}
